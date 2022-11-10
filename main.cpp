@@ -1,6 +1,6 @@
 #include "mbed.h"
 
-// main() runs in its own thread in the OS
+//First comment
 int main()
 {
     while (true) {
