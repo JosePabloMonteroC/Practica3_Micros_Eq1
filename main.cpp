@@ -48,23 +48,23 @@ DigitalIn BtnB(PTB2);    //Boton reducir velocidad
 
 /**Prototipos de Funcion*/
 void UP(segments segmentos, int freq);
+void DOWN(segments segmentos, int freq);
 
 
 int main()
 {
     segments segmentos(PTC9, PTC8, PTA5, PTA4, PTA12, PTD4, PTA2, PTC11, PTC10, PTC6, PTC5, PTC4, PTC3, PTC0);
-    float frecuencia = 1000000;  //1 segundo = 1000000, MAXIMO = 300000, MINIMO 2000000
-    int btn;
+    float frecuencia = 600000;  //1 segundo = 1000000, MAXIMO = 300000, MINIMO 2000000
 
     while(true){
 
-        if(BtnUD == 0)btn = 0;         //Sube
-        else if(BtnUD == 1)btn = 1;    //Baja
+       
+        UP(segmentos, frecuencia);
+        DOWN(segmentos, frecuencia);
 
         // if(BtnA && frecuencia >= 300000 && frecuencia <= 2000000)frecuencia += 300000;
         // else if(BtnB && frecuencia >= 300000 && frecuencia <= 2000000)frecuencia -= 300000;
 
-        UP(segmentos, frecuencia);
        
         
         
@@ -84,5 +84,21 @@ void UP(segments segmentos, int freq){
     segmentos.encender(1,0,0,1,1,0,0,0,0,0,0,0,0,1);
     wait_us(freq);
     segmentos.encender(0,1,0,0,1,0,0,0,0,0,0,0,0,1);
+    wait_us(freq);
+}
+
+void DOWN(segments segmentos, int freq){
+
+    segmentos.encender(0,1,0,0,1,0,0,0,0,0,0,0,0,1);
+    wait_us(freq);
+    segmentos.encender(1,0,0,1,1,0,0,0,0,0,0,0,0,1);
+    wait_us(freq);
+    segmentos.encender(0,0,0,0,1,1,0,0,0,0,0,0,0,1);
+    wait_us(freq);
+    segmentos.encender(0,0,1,0,0,1,0,0,0,0,0,0,0,1);
+    wait_us(freq);
+    segmentos.encender(1,0,0,1,1,1,1,0,0,0,0,0,0,1);
+    wait_us(freq);
+    segmentos.encender(0,0,0,0,0,0,1,0,0,0,0,0,0,1);
     wait_us(freq);
 }
