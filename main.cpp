@@ -46,6 +46,9 @@ DigitalIn BtnUD(PTB0);   //Boton Up/Down
 DigitalIn BtnA(PTB1);    //Boton aumentar velocidad
 DigitalIn BtnB(PTB2);    //Boton reducir velocidad
 
+/**Variables globales*/
+int indicador = 0;
+
 /**Prototipos de Funcion*/
 void UP(segments segmentos, int freq);
 void DOWN(segments segmentos, int freq);
@@ -55,12 +58,33 @@ int main()
 {
     segments segmentos(PTC9, PTC8, PTA5, PTA4, PTA12, PTD4, PTA2, PTC11, PTC10, PTC6, PTC5, PTC4, PTC3, PTC0);
     float frecuencia = 600000;  //1 segundo = 1000000, MAXIMO = 300000, MINIMO 2000000
+    int contador = 0;
 
     while(true){
 
-       
-        UP(segmentos, frecuencia);
-        DOWN(segmentos, frecuencia);
+
+        if(contador == 0 && BtnUD == 1)
+        {
+            contador = 1;
+            indicador = 1;
+        }
+        else if(contador == 1 && BtnUD == 1)
+        {
+            contador = 0;
+            indicador = 0;
+        }
+        switch(indicador)
+        {
+            case 0:
+                UP(segmentos, frecuencia);
+            break;
+
+            case 1:
+                DOWN(segmentos, frecuencia);
+            break;
+        }
+        
+        
 
         // if(BtnA && frecuencia >= 300000 && frecuencia <= 2000000)frecuencia += 300000;
         // else if(BtnB && frecuencia >= 300000 && frecuencia <= 2000000)frecuencia -= 300000;
@@ -75,30 +99,42 @@ void UP(segments segmentos, int freq){
 
     segmentos.encender(0,0,0,0,0,0,1,0,0,0,0,0,0,1);
     wait_us(freq);
+    if(indicador == 1)return;
     segmentos.encender(1,0,0,1,1,1,1,0,0,0,0,0,0,1);
     wait_us(freq);
+    if(indicador == 1)return;
     segmentos.encender(0,0,1,0,0,1,0,0,0,0,0,0,0,1);
     wait_us(freq);
+    if(indicador == 1)return;
     segmentos.encender(0,0,0,0,1,1,0,0,0,0,0,0,0,1);
     wait_us(freq);
+    if(indicador == 1)return;
     segmentos.encender(1,0,0,1,1,0,0,0,0,0,0,0,0,1);
     wait_us(freq);
+    if(indicador == 1)return;
     segmentos.encender(0,1,0,0,1,0,0,0,0,0,0,0,0,1);
     wait_us(freq);
+    if(indicador == 1)return;
 }
 
 void DOWN(segments segmentos, int freq){
 
     segmentos.encender(0,1,0,0,1,0,0,0,0,0,0,0,0,1);
     wait_us(freq);
+    if(indicador == 0)return;
     segmentos.encender(1,0,0,1,1,0,0,0,0,0,0,0,0,1);
     wait_us(freq);
+    if(indicador == 0)return;
     segmentos.encender(0,0,0,0,1,1,0,0,0,0,0,0,0,1);
     wait_us(freq);
+    if(indicador == 0)return;
     segmentos.encender(0,0,1,0,0,1,0,0,0,0,0,0,0,1);
     wait_us(freq);
+    if(indicador == 0)return;
     segmentos.encender(1,0,0,1,1,1,1,0,0,0,0,0,0,1);
     wait_us(freq);
+    if(indicador == 0)return;
     segmentos.encender(0,0,0,0,0,0,1,0,0,0,0,0,0,1);
     wait_us(freq);
+    if(indicador == 0)return;
 }
