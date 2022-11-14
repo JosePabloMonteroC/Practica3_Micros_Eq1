@@ -34,7 +34,7 @@ void imprimir(int i, int j, int frecuencia);
 void UP(int i, int j, int frecuencia);
 
 int main() {
-  float frecuencia =1000000; // 1 segundo = 1000000, MAXIMO = 300000, MINIMO 2000000
+  long int frecuencia =1000000; // 1 segundo = 1000000, MAXIMO = 300000, MINIMO 2000000
   int UD,A,B;
 
   while(1){
