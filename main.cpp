@@ -25,42 +25,34 @@ DigitalOut segm01[2][7] = {{PTC11, PTC10, PTC6, PTC5, PTC4, PTC3, PTC0},
                             {PTC9, PTC8, PTA5, PTA4, PTA12, PTD4, PTA2}};
 
 DigitalOut myled(LED1);
+long int frecuencia =1000000;
+int indicador = 0, ultimo10 = 0, ultimo01 = 0;
 
 DigitalIn BtnUD(PTB8); // Boton Up/Down
 DigitalIn BtnA(PTB9);  // Boton aumentar velocidad
 DigitalIn BtnB(PTB10); // Boton reducir velocidad
 
 void imprimir(int i, int j, int frecuencia);
-void UP(int i, int j, int frecuencia);
+void up(void);
+void down(void);
 
 int main() {
-  long int frecuencia =1000000; // 1 segundo = 1000000, MAXIMO = 300000, MINIMO 2000000
-  int UD,A,B;
+  
+  
 
   while(1){
     
+    switch(indicador){
+        case 0:
+            up();
+        break;
 
-    BtnUD.mode(PullUp);
-    BtnA.mode(PullUp);
-    BtnB.mode(PullUp);
-
-    UD = BtnUD;
-    A = BtnA;
-    B = BtnB;
-
-    for(int i = 0; i <= 16; i++)
-    {
-        
-        imprimir(0, i, frecuencia);
-        for(int j = 0; j <= 16; j++)
-        {
-            if(A == 1 && frecuencia >= 300000 && frecuencia <= 2000000)frecuencia += 300000;
-            else if(A == 0)frecuencia = frecuencia;
-            if(B == 1 && frecuencia >= 300000 && frecuencia <= 2000000)frecuencia -= 300000;
-            else if(B == 0)frecuencia = frecuencia;
-            imprimir(1, j, frecuencia);
-        }
+        case 1:
+            down();
+        break;
     }
+
+    
 
   }
 }
@@ -71,4 +63,133 @@ void imprimir(int i, int j, int frecuencia) {
     segm01[i][k] = salidas[j][k];
   }
   wait_us(frecuencia);
+}
+
+void up(){
+
+    for(int k = ultimo10; k <= 16; k++)
+    {
+        
+        imprimir(0, k, frecuencia);
+        for(int l = ultimo01; l <= 16; l++)
+        {
+            imprimir(1, l, frecuencia);
+            if(BtnUD == 1)
+            {
+                ultimo10 = k;
+                ultimo01 = l;
+                indicador = 1;
+                return;
+            }
+            myled = 1;
+            if(BtnA == 1 && frecuencia >= 300000)
+            {
+                myled = 0;
+                wait_us(200000);
+                frecuencia -= 300000;
+            }
+            else if(BtnB == 1 && frecuencia <= 2000000)
+            {
+                myled = 0;
+                wait_us(200000);
+                frecuencia += 300000;
+            }
+            
+        }
+    }
+
+
+    for(int i = 0; i <= 16; i++)
+    {
+        
+        imprimir(0, i, frecuencia);
+        for(int j = 0; j <= 16; j++)
+        {
+            imprimir(1, j, frecuencia);
+            if(BtnUD == 1)
+            {
+                ultimo10 = i;
+                ultimo01 = j;
+                indicador = 1;
+                return;
+            }
+            myled = 1;
+            if(BtnA == 1 && frecuencia >= 300000)
+            {
+                myled = 0;
+                wait_us(200000);
+                frecuencia -= 300000;
+            }
+            else if(BtnB == 1 && frecuencia <= 2000000)
+            {
+                myled = 0;
+                wait_us(200000);
+                frecuencia += 300000;
+            }
+            
+        }
+    }
+}
+
+void down(){
+    for(int k = ultimo10; k >= 0; k--)
+    {
+        imprimir(0, k, frecuencia);
+        for(int l = ultimo01; l >= 0; l--)
+        {
+            imprimir(1, l, frecuencia);
+            if(BtnUD == 1)
+            {
+                indicador = 0;
+                ultimo10 = k;
+                ultimo01 = l;
+                return;
+            }
+            myled = 1;
+            if(BtnA == 1 && frecuencia >= 300000)
+            {
+                myled = 0;
+                wait_us(200000);
+                frecuencia -= 300000;
+            }
+            else if(BtnB == 1 && frecuencia <= 2000000)
+            {
+                myled = 0;
+                wait_us(200000);
+                frecuencia += 300000;
+            }
+            
+        }
+    }
+
+    for(int i = 15; i >= 0; i--)
+    {
+        
+        imprimir(0, i, frecuencia);
+        for(int j = 15; j >= 0; j--)
+        {
+            imprimir(1, j, frecuencia);
+            if(BtnUD == 1)
+            {
+                indicador = 0;
+                ultimo10 = i;
+                ultimo01 = j;
+                return;
+            }
+            myled = 1;
+            if(BtnA == 1 && frecuencia >= 300000)
+            {
+                myled = 0;
+                wait_us(200000);
+                frecuencia -= 300000;
+            }
+            else if(BtnB == 1 && frecuencia <= 2000000)
+            {
+                myled = 0;
+                wait_us(200000);
+                frecuencia += 300000;
+            }
+            
+        }
+    }
 }
