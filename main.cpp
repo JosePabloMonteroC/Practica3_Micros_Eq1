@@ -98,9 +98,9 @@ void up(){
             }
             
         }
+        ultimo01 = 0;
     }
     ultimo10 = 0;
-    ultimo01 = 0;
     indicador = 0;
     return;
 }
@@ -135,9 +135,9 @@ void down(){
             }
             
         }
+        ultimo01 = 15;
     }
     ultimo10 = 15;
-    ultimo01 = 15;
     indicador = 1;
     return;
 
