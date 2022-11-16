@@ -1,5 +1,6 @@
 #include "mbed.h"
 
+/**Arreglo bidimensional codificado con las salidas de cada segmento*/
 int salidas[17][7] = {{0, 0, 0, 0, 0, 0, 1},    // 0
                       {1, 0, 0, 1, 1, 1, 1},   // 1
                       {0, 0, 1, 0, 0, 1, 0},   // 2
@@ -11,53 +12,59 @@ int salidas[17][7] = {{0, 0, 0, 0, 0, 0, 1},    // 0
                       {0, 0, 0, 0, 0, 0, 0},   // 8
                       {0, 0, 0, 0, 1, 0, 0},   // 9
                       {0, 0, 0, 1, 0, 0, 0},   // 10(A)
-                      {1, 1, 0, 0, 0, 0, 0},  // 11 (B)
-                      {0, 1, 1, 0, 0, 0, 1},  // 12 (C)
-                      {1, 0, 0, 0, 0, 1, 0},  // 13 (D)
-                      {0, 1, 1, 0, 0, 0, 0},  // 14 (E)
-                      {0, 1, 1, 1, 0, 0, 0},  // 15 (F)
-                      {0, 0, 0, 0, 0, 0, 1}}; // 0
-
-//  DigitalOut segm01[2][7] = {{PTC9, PTC8, PTA5, PTA4, PTA12, PTD4, PTA2},
-//                             {PTC11, PTC10, PTC6, PTC5, PTC4, PTC3, PTC0}};
-
-DigitalOut segm01[2][7] = {{PTC11, PTC10, PTC6, PTC5, PTC4, PTC3, PTC0},
-                            {PTC9, PTC8, PTA5, PTA4, PTA12, PTD4, PTA2}};
+                      {1, 1, 0, 0, 0, 0, 0},   // 11 (B)
+                      {0, 1, 1, 0, 0, 0, 1},   // 12 (C)
+                      {1, 0, 0, 0, 0, 1, 0},   // 13 (D)
+                      {0, 1, 1, 0, 0, 0, 0},   // 14 (E)
+                      {0, 1, 1, 1, 0, 0, 0},   // 15 (F)
+                      {0, 0, 0, 0, 0, 0, 1}};  // 0
 
 DigitalOut myled(LED1);
-long int frecuencia =1000000;
-int indicador = 0, ultimo10 = 0, ultimo01 = 0;
+
+/**Arreglo bidimensional de puertos para los segmentos*/
+DigitalOut segm01[2][7] = {{PTC11, PTC10, PTC6, PTC5, PTC4, PTC3, PTC0},    //Segmento 10
+                            {PTC9, PTC8, PTA5, PTA4, PTA12, PTD4, PTA2}};   //Segmento 01
 
 DigitalIn BtnUD(PTB8); // Boton Up/Down
 DigitalIn BtnA(PTB9);  // Boton aumentar velocidad
 DigitalIn BtnB(PTB10); // Boton reducir velocidad
 
+/**Variables globales*/
+long int frecuencia =1000000;           //Frecuencia inicial 1s, minimo 0.3s, máximo 0.6s
+int indicador = 0;                      //Variable que definirá si la cuenta es ascendente o descendente.
+int ultimo10 = 0;                       //Variable que almacenará el último número en el que se quedó el segmento más significativo.
+int ultimo01 = 0;                       //Variable que almacenará el último número en el que se quedó el segmento menos significativo.
+
+/**Prototipos de funcion*/
 void imprimir(int i, int j, int frecuencia);
 void up(void);
 void down(void);
 
+/**Función principal*/
 int main() {
   
-  
-
   while(1){
     
     switch(indicador){
         case 0:
             up();
-
         break;
 
         case 1:
             down();
         break;
     }
-
-    
-
   }
+
+  return 0;
 }
 
+/**
+@fn imprimir
+@details Funcion que manda un 0 o un 1 a las salidas del segmento correspondiente para encender el número.
+@param variable i para definir cual de los 2 segmentos encender, variable j para indicar que numero encender, frecuencia para controlar la velocidad de espera.
+@return
+*/
 void imprimir(int i, int j, int frecuencia) {
   for (int k = 0; k <= 6; k++) 
   {
@@ -66,20 +73,25 @@ void imprimir(int i, int j, int frecuencia) {
   wait_us(frecuencia);
 }
 
+/**
+@fn up
+@details Funcion que cuenta de manera ascendente
+@return
+*/
 void up(){
 
-    for(int k = ultimo10; k <= 16; k++)
+    for(int i = ultimo10; i <= 16; i++)
     {
         
-        imprimir(0, k, frecuencia);
+        imprimir(0, i, frecuencia);
 
-        for(int l = ultimo01; l <= 16; l++)
+        for(int j = ultimo01; j <= 16; j++)
         {
-            imprimir(1, l, frecuencia);
+            imprimir(1, j, frecuencia);
             if(BtnUD == 1)
             {
-                ultimo10 = k;
-                ultimo01 = l;
+                ultimo10 = i;
+                ultimo01 = j;
                 indicador = 1;
                 return;
             }
@@ -105,18 +117,23 @@ void up(){
     return;
 }
 
+/**
+@fn down
+@details Funcion que cuenta de manera descendiente
+@return
+*/
 void down(){
-    for(int k = ultimo10; k >= 0; k--)
+    for(int i = ultimo10; i >= 0; i--)
     {
-        imprimir(0, k, frecuencia);
-        for(int l = ultimo01; l >= 0; l--)
+        imprimir(0, i, frecuencia);
+        for(int j = ultimo01; j >= 0; j--)
         {
-            imprimir(1, l, frecuencia);
+            imprimir(1, j, frecuencia);
             if(BtnUD == 1)
             {
                 
-                ultimo10 = k;
-                ultimo01 = l;
+                ultimo10 = i;
+                ultimo01 = j;
                 indicador = 0;
                 return;
             }
@@ -140,5 +157,4 @@ void down(){
     ultimo10 = 15;
     indicador = 1;
     return;
-
 }
