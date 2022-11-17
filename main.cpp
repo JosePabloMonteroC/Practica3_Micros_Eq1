@@ -1,7 +1,7 @@
 #include "mbed.h"
 
 /**Arreglo bidimensional codificado con las salidas de cada segmento*/
-int salidas[17][7] = {{0, 0, 0, 0, 0, 0, 1},    // 0
+int salidas[16][7] = {{0, 0, 0, 0, 0, 0, 1},    // 0
                       {1, 0, 0, 1, 1, 1, 1},   // 1
                       {0, 0, 1, 0, 0, 1, 0},   // 2
                       {0, 0, 0, 0, 1, 1, 0},   // 3
@@ -16,8 +16,8 @@ int salidas[17][7] = {{0, 0, 0, 0, 0, 0, 1},    // 0
                       {0, 1, 1, 0, 0, 0, 1},   // 12 (C)
                       {1, 0, 0, 0, 0, 1, 0},   // 13 (D)
                       {0, 1, 1, 0, 0, 0, 0},   // 14 (E)
-                      {0, 1, 1, 1, 0, 0, 0},   // 15 (F)
-                      {0, 0, 0, 0, 0, 0, 1}};  // 0
+                      {0, 1, 1, 1, 0, 0, 0}};   // 15 (F)
+                      //{0, 0, 0, 0, 0, 0, 1}};  // 0
 
 DigitalOut ledRojo(LED1);
 DigitalOut ledVerde(LED2);
@@ -88,12 +88,12 @@ void imprimir(int i, int j, int vel) {
 */
 void up(){
 
-    for(int i = ultimo10; i <= 16; i++)
+    for(int i = ultimo10; i <= 15; i++)
     {
         
         imprimir(0, i, vel);
 
-        for(int j = ultimo01; j <= 16; j++)
+        for(int j = ultimo01; j <= 15; j++)
         {
             imprimir(1, j, vel);
             if(BtnUD == 1)
@@ -106,19 +106,19 @@ void up(){
                 ledAzul = 1;
                 return;
             }
-            if(BtnA == 1 && vel >= 300000)
+            if(BtnA == 1 && vel >= 400000)
             {
                 ledVerde = 0;
                 wait_us(100000);
                 ledVerde = 1;
-                vel -= 300000;
+                vel -= 200000;
             }
             else if(BtnB == 1 && vel <= 2000000)
             {
                 ledRojo = 0;
                 wait_us(200000);
                 ledRojo = 1;
-                vel += 300000;
+                vel += 200000;
             }
             
         }
@@ -140,6 +140,7 @@ void down(){
         imprimir(0, i, vel);
         for(int j = ultimo01; j >= 0; j--)
         {
+            
             imprimir(1, j, vel);
             if(BtnUD == 1)
             {
@@ -151,19 +152,19 @@ void down(){
                 ledAzul = 1;
                 return;
             }
-            if(BtnA == 1 && vel >= 300000)
+            if(BtnA == 1 && vel >= 400000)
             {
                 ledVerde = 0;
                 wait_us(200000);
                 ledVerde = 1;
-                vel -= 300000;
+                vel -= 200000;
             }
             else if(BtnB == 1 && vel <= 2000000)
             {
                 ledRojo = 0;
                 wait_us(200000);
                 ledRojo = 1;
-                vel += 300000;
+                vel += 200000;
             }
             
         }
